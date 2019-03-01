@@ -37,20 +37,55 @@ class App extends Component {
     });
   };
 
+  deleteSmurf = id => {
+    axios
+      .delete(`http://localhost:3333/smurfs/${id}`)
+      .then(res => {
+        this.setState({
+          smurfs: res.data
+        });
+      })
+      .catch(e => console.log(e));
+  };
+
+  editSmurf = (id, smurf) => {
+    axios
+      .put(`http://localhost:3333/smurfs/${id}`, smurf)
+      .then(res => {
+        this.setState({
+          smurfs: res.data
+        });
+        this.props.history.push("/");
+      })
+      .catch(e => console.log(e));
+  };
+
   render() {
     return (
       <div className="App">
         <NavLink to="/">Home</NavLink>
-        <NavLink to="/smurf-form">Smurf Form</NavLink>
+        <NavLink to="/smurf-form">Add Smurf</NavLink>
 
         <Route
           path="/smurf-form"
-          render={props => <SmurfForm {...props} addSmurf={this.addSmurf} />}
+          render={props => (
+            <SmurfForm
+              {...props}
+              addSmurf={this.addSmurf}
+              editSmurf={this.editSmurf}
+            />
+          )}
         />
         <Route
           path="/"
           exact
-          render={props => <Smurfs {...props} smurfs={this.state.smurfs} />}
+          render={props => (
+            <Smurfs
+              {...props}
+              smurfs={this.state.smurfs}
+              deleteSmurf={this.deleteSmurf}
+            />
+          )}
         />
       </div>
     );
